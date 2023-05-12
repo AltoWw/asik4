@@ -62,7 +62,34 @@ public class BST <K extends Comparable <K>, V> implements Iterable<K> {
     public void delete(K key) {
 
     }
-    public Iterable<K> iterator(){
+    @Override
+    public Iterator<K> iterator() {
+        return new MyIterator();
+    }
 
+    private class MyIterator implements Iterator<K> {
+        private List<K> inorder;
+        private int cursor;
+        public MyIterator() {
+            inorder = new ArrayList<>();
+            inorder(root, inorder);
+        }
+
+        private void inorder(Node node, List<K> res) {
+            if(node == null) return;
+            inorder(node.left, res);
+            res.add(node.key);
+            inorder(node.right, res);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return cursor < inorder.size();
+        }
+
+        @Override
+        public K next() {
+            return inorder.get(cursor++);
+        }
     }
 }
