@@ -60,8 +60,47 @@ public class BST <K extends Comparable <K>, V> implements Iterable<K> {
     }
 
     public void delete(K key) {
-
+        root = delete(root, key);
     }
+
+    private Node delete(Node node, K key) {
+        if (node == null) return null;
+
+        int comp = key.compareTo(node.key);
+        if (comp < 0) {
+            node.left = delete(node.left, key);
+        } else if (comp > 0) {
+            node.right = delete(node.right, key);
+        } else {
+            // node to delete found
+            if (node.left == null) {
+                return node.right; // case 1 and 2a
+            } else if (node.right == null) {
+                return node.left; // case 2b
+            } else {
+                // case 3: node has two children
+                Node minNode = findMin(node.right);
+                node.key = minNode.key;
+                node.val = minNode.val;
+                node.right = delete(node.right, minNode.key);
+            }
+        }
+
+        node.size = 1 + size(node.left) + size(node.right);
+        return node;
+    }
+
+    private Node findMin(Node node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
+
+    private int size(Node node) {
+        return node == null ? 0 : node.size;
+    }
+
     @Override
     public Iterator<K> iterator() {
         return new MyIterator();
